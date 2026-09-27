@@ -8,6 +8,7 @@
 ### Case Study Expectations
   ####  Required Section 
   - [x] Dockerize the application
+  - [x] Provide a docker compose file to run it locally 
   - [x] Run minikube/kind or any kind of local kubernetes cluster locally. 
   - [x] Provide a script and/or the documentation of how to run the cluster locally.
   - [x] Prepare kubernetes manifests(yaml files) for the application and for the DB of the app
@@ -15,7 +16,6 @@
   - [ ] Prepare a CI pipeline for the application in any CI tool(Jenkins, Github Actions, GitLab etc.)
      
   ####  Optional / Extra Section
-  - [x] Provide a docker compose file to run it locally 
   - [ ] Prepare a CD pipeline as well
   - [ ] Doing every step of the task for a production environment.
   - [ ] Creating a detailed README file.
