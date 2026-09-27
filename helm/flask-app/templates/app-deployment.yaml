@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: app
+  name: app
+  namespace: pymongo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+#      affinity:
+#        podAntiAffinity:
+#          preferredDuringSchedulingIgnoredDuringExecution:
+#          - podAffinityTerm:
+#              labelSelector:
+#                matchLabels:
+#                  name: mongodb
+#            weight: 1
+      containers:
+      - image: flask-api:1.0
+        imagePullPolicy: Never
+        name: flask-app
+        ports:
+        - containerPort: 5000
+          name: flask
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 750m
+            ephemeral-storage: 1Gi
+            memory: 768Mi
+          requests:
+            cpu: 500m
+            ephemeral-storage: 50Mi
+            memory: 512Mi
+        livenessProbe:
+          exec:
+            command:
+            - curl --fail --quiet http://localhost:5000/ || exit 1
+          failureThreshold: 5
+          initialDelaySeconds: 30
+          periodSeconds: 20
+          successThreshold: 1
+          timeoutSeconds: 10
+#        readinessProbe:
+#          exec:
+#            command:
+#            - 
+#          failureThreshold: 5
+#          initialDelaySeconds: 5
+#          periodSeconds: 10
+#          successThreshold: 1
+#          timeoutSeconds: 5
+status: {}
