@@ -17,7 +17,7 @@
    | | - Created a compose file using docker hub's mongo:7.0.43-jammy |
    | | - Both services work, seem to communicate but still 404 error despite requests going through |
    | | - Tons of research on docker, flask, mongodb |
-   | | - <img-1.png> | 
+   | | - <img-1> | 
    | | - Decided its not a networking issue, putting a pin on it for later |
    | | - Refreshing k8s knowledge by going through some of the courses again |
    | | - Decided to use minikube with this project as well | 
