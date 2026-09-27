@@ -22,10 +22,20 @@
    | | - Refreshing k8s knowledge by going through some of the courses again |
    | | - Decided to use minikube with this project as well | 
    | 27.09 | - Getting started with raw k8s manifests |
+   | | - Removed and reinstalled minikube (broke when i purged docker & old case-study files completely) using minikube docs with stackoverflow for removal |
+   | | - Instead of a nodeport, decided to use loadbalancer svc (prev case study had ingress option at helm so load balancing wasn't an issue, might change it later)  |
+   
 ---
    ### Ideas / Problems / Missing Parts 
 *This part of the report is for keeping track of pins i've decided*
-*to solve later.*
+*to solve later, after initial deadline*
+> ### Flask problems  
+>> **1. 404 not found when cURL'ed (most important)**  
+>> 2. How to **NOT** hardcode the mongodb cred.s in flasks 'db_config.json'
 
-1- 404 not found problem with flask 
-2- Security issues on dockerfile and compose
+> ### Docker-side   
+>> 1. Docker security (?) additions mentined by my supervisor.   
+>>> Learn what they are
+
+>> 2. Double-checking health checks done in compose   
+>>> Just because they seemed healthy, doesn't mean they are, maybe the health checks were implemented poorly.   
