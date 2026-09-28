@@ -9,6 +9,8 @@ on:
 jobs:
   unit-testing:
     runs-on: ubuntu-latest
+    services: 
+      - mongodb:7.0.43-jammy
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v7
@@ -27,15 +29,14 @@ jobs:
 
   Docker:
     runs-on: ubuntu-latest
-    services: 
-      - mongodb:7.0.43-jammy
     steps:
+      - uses: actions/checkout@7
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
 
       - name: Validate build configuration
         uses: docker/build-push-action@v7
         with:
-          call: check 
+          call: check
 
 
