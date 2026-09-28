@@ -10,7 +10,8 @@ jobs:
   unit-testing:
     runs-on: ubuntu-latest
     services: 
-    - mongodb: 7
+      - name: mongodb:7.0.43-jammy 
+        alias: mongodb
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v7
