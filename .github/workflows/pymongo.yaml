@@ -10,33 +10,33 @@ jobs:
   unit-testing:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v7
+    - name: Checkout Repository
+      uses: actions/checkout@v7
 
-      - name: Setup python - 3.14
-        uses: actions@setup-python@v7
-        with:
-          python-version: '3.14'
-          cache: 'pip'
+    - name: Setup python - 3.14
+      uses: actions@setup-python@v7
+      with:
+        python-version: '3.14'
+        cache: 'pip'
 
-      - name: Install Dependencies
-        run: pip install -r requirements.txt
+    - name: Install Dependencies
+      run: pip install -r requirements.txt
 
-      - name: Unit Testing
-        services: 
-          - mongodb: 7
-        run: pytest
+    - name: Unit Testing
+      services: 
+        - mongodb: 7
+      run: pytest
 
   Docker:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@7
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4
+    - uses: actions/checkout@7
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v4
 
-      - name: Validate build configuration
-        uses: docker/build-push-action@v7
-        with:
-          call: check
+    - name: Validate build configuration
+      uses: docker/build-push-action@v7
+      with:
+        call: check
 
 
