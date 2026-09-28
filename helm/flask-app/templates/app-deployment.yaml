@@ -2,14 +2,14 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: app
-  name: app
-  namespace: pymongo
-spec:
-  replicas: 1
-  selector:
+    {{- include "labels" . | indent 4 }}
+  name: {{ .Release.Name }}-flask
+  namespace: {{ .Values.namespace }}
+spec: 
+  replicas: {{ .Values.replicaCount }}
+  selector: 
     matchLabels:
-      app: app
+      {{- include "labels" . | indent 6}}
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -28,10 +28,11 @@ spec:
 #                matchLabels:
 #                  name: mongodb
 #            weight: 1
+#        nodeAffinity: -> for when it has more nodes
       containers:
-      - image: flask-api:1.0
-        imagePullPolicy: Never
-        name: flask-app
+      - image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        name: {{ .Values.image.name }}
         ports:
         - containerPort: 5000
           name: flask

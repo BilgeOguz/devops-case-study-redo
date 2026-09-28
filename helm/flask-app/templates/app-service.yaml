@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    {{- include "labels" $ | indent 4 }}
+  name: {{ .Release.Name }}-service
+  namespace: {{ .Values.namespace }}
+{{- with .Values.service }}
+spec:
+  ports:
+  - name: http
+    port: {{ .port }}
+    targetPort: {{ .targetPort }}
+#    nodePort: 30007 -> I'm guessing its bad practice in helm to staticaly assign nodeports
+  selector:
+    {{- include "labels" $ | indent 4 }}
+  type: {{ .type }}
+{{- end }}
+status: {}
