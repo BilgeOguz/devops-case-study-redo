@@ -13,13 +13,13 @@
   :white_check_mark: Provide a script and/or the documentation of how to run the cluster locally.   
   :white_check_mark: Prepare kubernetes manifests(yaml files) for the application and for the DB of the app   
   :white_check_mark: Develop a helm chart for the app   
-  - [ ] Prepare a CI pipeline for the application in any CI tool(Jenkins, Github Actions, GitLab etc.)
+  :arrows_counterclockwise: Prepare a CI pipeline for the application in any CI tool(Jenkins, Github Actions, GitLab etc.)
      
   ####  Optional / Extra Section
-  - [ ] Prepare a CD pipeline as well
-  - [ ] Doing every step of the task for a production environment.
-  - [ ] Creating a detailed README file.
-  - [ ] Preparing automation scripts for any step.(For example to start a Jenkins server, creation of the local kubernetes cluster, deployment of the app to the cluster etc.)
+  :red_square: Prepare a CD pipeline as well   
+  :red_square: Doing every step of the task for a production environment.   
+  :yellow_square: Creating a detailed README file.   
+  :red_square: Preparing automation scripts for any step.(For example to start a Jenkins server, creation of the local kubernetes cluster, deployment of the app to the cluster etc.)   
 
 
   ---
