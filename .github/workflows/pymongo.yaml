@@ -21,7 +21,7 @@ jobs:
         pip install pytest
 
     - name: Unit Testing 
-      run: pytest app/mvc-flask-pymongo/src/*.py # Not sure if this actually works ok 
+      run: pytest app/mvc-flask-pymongo/src/* # Not sure if this actually works ok 
       
   dockerImageBuild:
     runs-on: ubuntu latest
