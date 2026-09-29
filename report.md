@@ -199,9 +199,9 @@ json.decoder.JSONDecodeError: Expecting ',' delimiter: line 9 column 1 (char 155
 >> PVC [^13]   
 >> RBAC?   
 >> ~~Metrics Server ( minikube addons enable metrics server)~~
->>> Make sure you look up the 'metrics server addon = enabled' for reusability?
->> Init containers to build the image and pass it onto the main container???? (Idk if makes sense for now, just an idea to pass values to db_config.json) [^15]
->> Vault? Secret(encrypted)??
+>>> Make sure you look up the 'metrics server addon = enabled' for reusability?      
+>> Init containers to build the image and pass it onto the main container???? (Idk if makes sense for now, just an idea to pass values to db_config.json) [^15]      
+>> Vault? Secret(encrypted)??    
    
  ### Github Actions
 > 1. Unit test  not passing
