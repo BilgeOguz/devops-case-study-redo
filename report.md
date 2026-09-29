@@ -46,8 +46,8 @@
    | | - Decided to use minikube with this project as well | 
    | 27.09 | - Getting started with raw k8s manifests |
    | | - Removed and reinstalled minikube (broke when i purged docker & old case-study files completely) using minikube docs with stackoverflow for removal |
-   | | - Instead of a nodeport, decided to use loadbalancer svc (although it won't work as a load balancer in this k8s env, prev case study had ingress option at helm so load balancing wasn't an issue, might change it later)  |
-   | | - Created the simplest working k8s cluster possible for the app. |
+   | | - Instead of a nodeport, decided to use loadbalancer svc (although it won't work as a load balancer in this k8s env, prev case study had ingress option at helm so load balancing wasn't an issue, might change it later) (haven't implemented, just an idea) |
+   | | - Created the simplest working k8s files for app possible. |
    | | - Continuing with helm |
    | | - Installed the db from the bitnami helm chart |
    | | - Creating helm chart for the app |
