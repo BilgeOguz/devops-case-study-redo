@@ -7,23 +7,23 @@
    ---
 ## Case Study Expectations
 
-   PS: Parts written in 
-   <ins><span style="color:teal"> **teal**</span></ins>
-   highlight the parts that are normally optional, but required for me.
-  ###  Required Section
-  - [x] Dockerize the application
-  - [x] <span style="color:teal"> Provide a docker compose file to run it locally
-  - [x] Run minikube/kind or any kind of local kubernetes cluster locally. 
-  - [ ] Provide a script and/or the documentation of how to run the cluster locally.
-  - [x] Prepare kubernetes manifests(yaml files) for the application and for the DB of the app
-  - [x] <span style="color:teal">Develop a helm chart for the app
-  - [ ] Prepare a CI pipeline for the application in any CI tool(Jenkins, Github Actions, GitLab etc.)
+   PS: Parts written <ins>**underscored**</ins>
+   highlight the parts that are normally optional, but are required for me.
+   
+  ####  Required Section 
+  :white_check_mark: Dockerize the application   
+  :white_check_mark: <ins>Provide a docker compose file to run it locally</ins> 
+  :white_check_mark: Run minikube/kind or any kind of local kubernetes cluster locally.    
+  :white_check_mark: Provide a script and/or the documentation of how to run the cluster locally.   
+  :white_check_mark: Prepare kubernetes manifests(yaml files) for the application and for the DB of the app   
+  :white_check_mark: <ins>Develop a helm chart for the app</ins>   
+  :arrows_counterclockwise: Prepare a CI pipeline for the application in any CI tool(Jenkins, Github Actions, GitLab etc.)
      
-  ###  Optional / Extra Section
-  - [ ] Prepare a CD pipeline as well
-  - [ ] Doing every step of the task for a production environment.
-  - [ ] Creating a detailed README file.
-  - [ ] Preparing automation scripts for any step.(For example to start a Jenkins server, creation of the local kubernetes cluster, deployment of the app to the cluster etc.)
+  ####  Optional / Extra Section
+  :red_square: Prepare a CD pipeline as well   
+  :red_square: Doing every step of the task for a production environment.   
+  :yellow_square: Creating a detailed README file.   
+  :red_square: Preparing automation scripts for any step.(For example to start a Jenkins server, creation of the local kubernetes cluster, deployment of the app to the cluster etc.)   
 
 
   ---
@@ -55,59 +55,112 @@
    | 28.09 | - Created a very simple helm chart in order to move on with the project req |
    | | - Onto creating CI pipeline |
    | | - Refreshing memory by going through courses |
-   | | - Initial deadline :clock930:
-   
+   | | - Initial deadline :clock930: - proceeding with the project until tomorrow |
+   | | - Created ci jobs for unit testing and docker, but there seems to be issues |
+   | | - Troubleshooting the ci | 
+   | | - Problem seems to be with the app itself and not the ci, it doesn't pass the tests |
+   | | - Troubleshooting the app | 
+   | 29.09 | - Problem handling starting from the app itself to ci |
+   | | - moving on to creating a documentation instead | 
+   | | - Finishing the ci jobs (they don't actually need to be validating what i have if it's broken. So its better to finish them up and return for why the app is failing tests later | 
+   | | - Realized I've been changing things in both main and ci experimentations branches, not to mention locally too. Scared to merge, will look up merge conflicts |
+   | | - Somewhat finished CI pipeline, will watch some more KodeKloud videos to make sure before i merge | 
    
 ---
    ## Notes / Problems / Missing Parts 
 *This part of the report is for keeping track of pins i've decided*
 *to solve later, after initial deadline*
-> ### App  
->> **1. 404 not found when cURL'ed (most important)**  
->> 2. How to **NOT** hardcode the mongodb cred.s in flasks 'db_config.json' [^1] [^8]
+### Unit  
+> **1. 404 not found when cURL'ed (most important)**  
+> 2. ~~How to **NOT** hardcode the mongodb cred.s in flasks 'db_config.json'~~ [^1] [^8]
+>> There must be a reason why they decided to full the bd config flies from a separate config.py
+>> and not directly pull from db-config.json. I think I'm able to use any method to store cred as long as
+>> i can implement 'jsonify-ing' it at config.py (what it does anyways, even though the file is already a json)
+>>> How can i leave the config data ***inside the image*** blank and then fill through docker (gitignored env or secrets) and kubernetes's CRI at runtime? [^10]
+       
+> 3. After i meddled with the db config (image tag 1.1 instead of the 1.0 that all tools are using, for safety purposes), i ran into an error: [^11]
+ ```bash
+ docker run flask-api:1.1
+Traceback (most recent call last):
+  File "/src/app.py", line 2, in <module>
+    from models import todo  # call model file
+    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/src/models/todo.py", line 2, in <module>
+    from factory.database import Database
+  File "/src/factory/database.py", line 5, in <module>
+    from config import config
+  File "/src/config.py", line 3, in <module>
+    config = json.load(open('db_config.json'))  #load db in json format
+  File "/usr/lib/python3.14/json/__init__.py", line 298, in load
+    return loads(fp.read(),
+        cls=cls, object_hook=object_hook,
+        parse_float=parse_float, parse_int=parse_int,
+        parse_constant=parse_constant, object_pairs_hook=object_pairs_hook, **kw)
+  File "/usr/lib/python3.14/json/__init__.py", line 352, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/usr/lib/python3.14/json/decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/json/decoder.py", line 361, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ~~~~~~~~~~~~~~^^^^^^^^
+json.decoder.JSONDecodeError: Expecting ',' delimiter: line 9 column 1 (char 155)
+```
+>> Seems like a syntax problem at first, but i've checked the 'problem' parts and it seems fine. I'm currently looking it up to fix it, soma people had the same problem (same error with valid syntax) but their solutions don't apply to my problem.
+>> I'll give working thorugh the python/flask related issues but they are the least important in this case study. If not
+>> working, ***I'd have to call it a day*** and continue with the other (helm especially) parts of the project instead.
+>>
+>> ***Moving along with the not working but running flask-api:1.0 instead of the corrected but crashing 1.1***
+    
+### Docker  
+> 1. Docker security (?) additions mentined by my supervisor.   
+> 2. ~~Double-checking health checks done in compose~~  
+>> ~~Just because they seemed healthy, doesn't mean they are, maybe the health checks were implemented poorly.~~
+>>> Checked them, they are not giving healthy results anyways. There is just no halt system for it.
 
-> ### Docker  
->> 1. Docker security (?) additions mentined by my supervisor.   
->> 2. Double-checking health checks done in compose   
->>> Just because they seemed healthy, doesn't mean they are, maybe the health checks were implemented poorly.   
+ ### Kubernetes
+> 1. This Kubernetes structure is almost as simplest it gets:
+>> Deployments + required networking + helm installed db
+>>> It's to be upgraded and added onto once the complete project **once the main requirements are met.**
 
-> ### Kubernetes
->> 1. This Kubernetes structure is almost as simplest it gets:
->>> Deployments + required networking + helm installed db
->>>> It's to be upgraded and added onto once the complete project **once the main requirements are met.**
+> 2. ~~Readiness Prope~~ & Pod Affinity for flask deployment
+>> Figure out how to ~~get readiness prope and~~ fix affinity (They are in the yaml manifests as a comments)
+>>> The liveness prope i currently is a better readiness prope, I should find a new liveness prope instead. 
 
->> 2. Readiness Trope & Pod Affinity for flask deployment
->>> Figure out how to get readiness trope and fix affinity (They are in the yaml manifests as a comments)
-
->> 3. Scripts for running locally on dif env
->>> For the app deployment,
+> 3. ~~Scripts for running locally on dif env~~
+>> ~~For the app deployment,~~
    ```bash
    minikube image build -t flask-api:1.0 app/mvc-flask-pymongo/
    ```
->>>   command used
+>>   ~~command used~~
+>>> Added it to the setup documentation in README.md, won't be a problem for now but I'll be considering
+>>> writing automation scrips later. 
 
->> ~~4. MongoDB using wrong auth information~~ [^2] 
->>> ~~Fix it either creating actual manifest files for mongo or finding a way to change the pull via bash or helm options (later add it in scripts)~~    
->>> Fixed by pulling the helm chart instead of installing it
+> ~~4. MongoDB using wrong auth information~~ [^2] 
+>> ~~Fix it either creating actual manifest files for mongo or finding a way to change the pull via bash or helm options (later add it in scripts)~~    
+>> Fixed by pulling the helm chart instead of installing it
 
->> 5. ~~Loadbalancer stuck in pending state (bc of using it in bare metal instead of cloud providors)~~
->>> ~~Meh, maybe a nodeport for now? KodeKloud lesson mentioned it acting as nodepoort in bare metal, how to achieve that?~~ [^3]
->>> Changed it to a nodeport at helm level, ready to change back from values anytime.
+> 5. ~~Loadbalancer stuck in pending state (bc of using it in bare metal instead of cloud providors)~~
+>> ~~Meh, maybe a nodeport for now? KodeKloud lesson mentioned it acting as nodepoort in bare metal, how to achieve that?~~ [^3]
+>> Changed it to a nodeport at helm level, ready to change back from values anytime.
 
->> 6. Look further into some topics in more depth (mainly tu use at helm at this point in the project)
->>> Service accounts (k8s security in general)[^4]
->>> Gateway api instead of ingress this time [^5]
+> 6. Look further into some topics in more depth (mainly to use at helm at this point in the project)
+>> Service accounts (k8s security in general)[^4]
+>> Gateway api instead of ingress this time [^5]
    
-> ### Helm
->> 1. Check out using recommended labels further [^6]
->> 2. Chart-hookify your helm [^7]
->> 3. Implement the empty hpa and gateway api
->> 4. Configure the mongodb values
+ ### Helm
+> 1. Check out using recommended labels further [^6]
+> 2. Chart-hookify your helm [^7]
+> 3. Implement hpa and gateway api
+> 4. Configure the mongodb values
    
-> ### Github Actions
->>
-
----
+ ### Github Actions
+> 1. Unit test  not passing
+>> Figured out it wasn't because of the tests, but because of the flask app itself.
+   
+> 2. Skipping docker compose testing (probably will do later) [^9]
+> 
 
 [^1]:[Interpretation of config.json - Kubernetes Docs](https://kubernetes.io/docs/concepts/containers/images/#config-json)
 [^2]:[Customizing the Chart Before Installing - Helm Docs](https://helm.sh/docs/intro/using_helm/#customizing-the-chart-before-installing)
@@ -117,3 +170,6 @@
 [^6]:[Recommended Labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/)
 [^7]:[KK Course on chart hooks](https://learn.kodekloud.com/learn/courses/helm-for-beginners/module/b90a4aa4-31b5-43d3-a7aa-383d48c50db0/lesson/28973a08-1894-4976-ad1c-1df96e338d4c)
 [^8]:[Example Project on KK that uses mongodb - timestamp: 3:31](https://learn.kodekloud.com/learn/courses/github-actions/module/6136c7b5-8fe0-4a84-ae77-0274623512d5/lesson/6d590d33-38aa-4982-a7df-318e8bfb74e8)
+[^9]:[How to run and test compose in github actions](https://github.com/orgs/community/discussions/27185)
+[^10]:[Getting db URL from docker](https://www.reddit.com/r/docker/comments/es48vn/how_to_force_or_identify_db_url_in/)
+[^11]:[Someone having the same problem](https://stackoverflow.com/questions/9156417/valid-json-giving-jsondecodeerror-expecting-delimiter)
