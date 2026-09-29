@@ -66,8 +66,14 @@
    | :clock930: | - Revised the deadline on daily meet - proceeding with the project until confident |
    | | - Realized I've been changing things in both main and ci experimentations branches, not to mention locally too. Scared to merge, will look up merge conflicts |
    | | - Somewhat finished CI pipeline, will watch some more KodeKloud videos to make sure before i merge | 
-   | | - Started going through the CKA courses, noting down anything i want to implement for the future under helm (i will use helm to implement further)
-   | | -
+   | | - Started going through the CKA courses, noting down anything i want to implement for the future under helm (i will use helm to implement further) |
+   | | - CKA ended, going onto literature review |
+   | | - Fun fact: Ran into a kodekloud page on google search while looking around for some answers. Felt like i've seen a friend on the street |
+   | | - Did a 12 factor app table for myself, to keep what i need to do in check | 
+   | | - I'm getting ahead of myself and loose track of what's actually doable when i do too much research, forcing myself to actually start implementing again |
+   | 30.09 | - Issue to solve: Data injectable json instead of hardcoded values |
+
+   
    
 ---
 ## 12 Factor Compliance [#](https://12factor.net/)
@@ -91,6 +97,7 @@
 
 
 
+
    ## Notes / Problems / Missing Parts 
 *This part of the report is for keeping track of pins i've decided*
 *to solve later, after initial deadline*
@@ -100,7 +107,8 @@
 >> There must be a reason why they decided to full the bd config flies from a separate config.py
 >> and not directly pull from db-config.json. I think I'm able to use any method to store cred as long as
 >> i can implement 'jsonify-ing' it at config.py (what it does anyways, even though the file is already a json)
->>> How can i leave the config data ***inside the image*** blank and then fill through docker (gitignored env or secrets) and kubernetes's CRI at runtime? [^10] [^17]
+>>> How can i leave the config data ***inside the image*** blank and then fill through docker (gitignored env or secrets) and kubernetes's CRI at runtime? [^10]
+>>>  "The Twelve Factors, it says that we could pass this type of information via shell ENV vars and those information we passed will be used by the app (i.e. container) at runtime." [^17]
        
 > 3. After i meddled with the db config (image tag 1.1 instead of the 1.0 that all tools are using, for safety purposes), i ran into an error: [^11]
  ```bash
