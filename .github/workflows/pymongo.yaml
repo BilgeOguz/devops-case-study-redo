@@ -3,13 +3,14 @@ name: CI
 on: [push]
 jobs:
 
-  Unit Testing:
+  unitTesting:
     runs-on: ubuntu-latest
+#    services: for later to test w database
     steps:
     - uses: actions/checkout@v7
 
     - name: Setup python - 3.14
-      uses: actions@setup-python@v7
+      uses: actions/setup-python@v7
       with:
         python-version: '3.14'
         cache: 'pip'
@@ -18,9 +19,9 @@ jobs:
       run: pip install -r requirements.txt
 
     - name: Unit Testing
-      run: pytest   # Not sure if this actually works like that
-
-  Docker Image Building:
+      run: pytest   # Not sure if this actually works like thddat 
+      
+  dockerImageBuild:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@7
@@ -42,9 +43,9 @@ jobs:
         name: flask-api
         path: /tmp/flask-app-image.tar
 
-  Kubernetes & Helm: 
+  kubernetes-helm: 
     runs-on: ubuntu latest
-    needs: build
+    needs: dockerImageBuild
     steps:
     - uses: actions/checkout@v7
 
