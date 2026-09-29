@@ -10,14 +10,14 @@
    PS: Parts written <ins>**underscored**</ins>
    highlight the parts that are normally optional, but are required for me.
    
-  ####  Required Section 
+  ####  :white_check_mark: Required Section 
   :white_check_mark: Dockerize the application   
-  :white_check_mark: <ins>Provide a docker compose file to run it locally</ins> 
+  :white_check_mark: <ins>Provide a docker compose file to run it locally</ins>    
   :white_check_mark: Run minikube/kind or any kind of local kubernetes cluster locally.    
   :white_check_mark: Provide a script and/or the documentation of how to run the cluster locally.   
   :white_check_mark: Prepare kubernetes manifests(yaml files) for the application and for the DB of the app   
   :white_check_mark: <ins>Develop a helm chart for the app</ins>   
-  :arrows_counterclockwise: Prepare a CI pipeline for the application in any CI tool(Jenkins, Github Actions, GitLab etc.)
+  :white_check_mark: Prepare a CI pipeline for the application in any CI tool(Jenkins, Github Actions, GitLab etc.)
      
   ####  Optional / Extra Section
   :red_square: Prepare a CD pipeline as well   
@@ -55,7 +55,7 @@
    | 28.09 | - Created a very simple helm chart in order to move on with the project req |
    | | - Onto creating CI pipeline |
    | | - Refreshing memory by going through courses |
-   | | - Initial deadline :clock930: - proceeding with the project until tomorrow |
+   | :clock930: | - Initial deadline - proceeding with the project until tomorrow |
    | | - Created ci jobs for unit testing and docker, but there seems to be issues |
    | | - Troubleshooting the ci | 
    | | - Problem seems to be with the app itself and not the ci, it doesn't pass the tests |
@@ -63,10 +63,34 @@
    | 29.09 | - Problem handling starting from the app itself to ci |
    | | - moving on to creating a documentation instead | 
    | | - Finishing the ci jobs (they don't actually need to be validating what i have if it's broken. So its better to finish them up and return for why the app is failing tests later | 
+   | :clock930: | - Revised the deadline on daily meet - proceeding with the project until confident |
    | | - Realized I've been changing things in both main and ci experimentations branches, not to mention locally too. Scared to merge, will look up merge conflicts |
    | | - Somewhat finished CI pipeline, will watch some more KodeKloud videos to make sure before i merge | 
+   | | - Started going through the CKA courses, noting down anything i want to implement for the future under helm (i will use helm to implement further)
+   | | -
    
 ---
+## 12 Factor Compliance [#](https://12factor.net/)
+*-just for fun-*   
+   
+| # | Factor | Explanation | Implementation |    
+| ------ | ---------------- | ------------- | ----- |
+| [I.](https://12factor.net/codebase) | Codebase | "tracked in a version control system" | :white_check_mark:Git Repo |   
+| [II.](https://12factor.net/dependencies) | Dependencies | Explicitly declare and isolate dependencies | :yellow_square:requirements.txt |
+| [III.](https://12factor.net/config) | Config | Store config in the environment | :red_square: |
+| [IV.](https://12factor.net/backing-services) | Backing services | Treat backing services as attached resources | :yellow_square:MongoDB is attached resource through URL (although not sure it works as intended) |
+| [V.](https://12factor.net/build-release-run) | Build, release, run | Strictly separate build and run stages | :red_square:Config used in build stage instead of release |
+| [VI.](https://12factor.net/processes) | Processes | Execute the app as one or more stateless processes | :white_check_mark:Flask is stateless - Mongodb stateful |
+| [VII.](https://12factor.net/port-binding) | Port binding | Export services via port binding | :white_check_mark:Kubernetes services |
+| [VIII.](https://12factor.net/concurrency) | Concurrency | Scale out via the process model | ❔ Idk? HPA? |
+| [IX.](https://12factor.net/disposability) | Disposability | Maximize robustness with fast startup and graceful shutdown | ❔ |
+| [X.](https://12factor.net/dev-prod-parity) | Dev/prod parity | Keep development, staging, and production as similar as possible | :red_square:nope, only dev |
+| [XI.](https://12factor.net/logs) | Logs | Treat logs as event streams | :red_square:nope |
+| [XII.](https://12factor.net/admin-processes) | Admin processes | Run admin/management tasks as one-off processes | ❔ Not sure i understand yet | 
+
+
+
+
    ## Notes / Problems / Missing Parts 
 *This part of the report is for keeping track of pins i've decided*
 *to solve later, after initial deadline*
@@ -76,7 +100,7 @@
 >> There must be a reason why they decided to full the bd config flies from a separate config.py
 >> and not directly pull from db-config.json. I think I'm able to use any method to store cred as long as
 >> i can implement 'jsonify-ing' it at config.py (what it does anyways, even though the file is already a json)
->>> How can i leave the config data ***inside the image*** blank and then fill through docker (gitignored env or secrets) and kubernetes's CRI at runtime? [^10]
+>>> How can i leave the config data ***inside the image*** blank and then fill through docker (gitignored env or secrets) and kubernetes's CRI at runtime? [^10] [^17]
        
 > 3. After i meddled with the db config (image tag 1.1 instead of the 1.0 that all tools are using, for safety purposes), i ran into an error: [^11]
  ```bash
@@ -118,6 +142,8 @@ json.decoder.JSONDecodeError: Expecting ',' delimiter: line 9 column 1 (char 155
 > 2. ~~Double-checking health checks done in compose~~  
 >> ~~Just because they seemed healthy, doesn't mean they are, maybe the health checks were implemented poorly.~~
 >>> Checked them, they are not giving healthy results anyways. There is just no halt system for it.
+      
+> 3. Make the image multi-stage built
 
  ### Kubernetes
 > 1. This Kubernetes structure is almost as simplest it gets:
@@ -150,17 +176,23 @@ json.decoder.JSONDecodeError: Expecting ',' delimiter: line 9 column 1 (char 155
 >> Gateway api instead of ingress this time [^5]
    
  ### Helm
-> 1. Check out using recommended labels further [^6]
-> 2. Chart-hookify your helm [^7]
-> 3. Implement hpa and gateway api
-> 4. Configure the mongodb values
+> 1. Check out using recommended labels further [^6]   
+> 2. Chart-hookify your helm [^7]   
+> 3. Implement hpa[^16] and gateway api 
+> 4. Configure:   
+>>  The mongodb auth [^14] 
+>> PVC [^13]   
+>> RBAC?   
+>> Metrics Server ( minikube addons enable metrics server)
+>> Init containers to build the image and pass it onto the main container???? (Idk if makes sense for now, just an idea to pass values to db_config.json) [^15]
+>> Vault? Secret(encrypted)??
    
  ### Github Actions
 > 1. Unit test  not passing
 >> Figured out it wasn't because of the tests, but because of the flask app itself.
    
-> 2. Skipping docker compose testing (probably will do later) [^9]
-> 
+> 2. Skipping docker compose testing (probably will do later) [^9] [^12]
+> 3. GitHub Actions (build image job) stuck on “Waiting for a hosted runner to come online”
 
 [^1]:[Interpretation of config.json - Kubernetes Docs](https://kubernetes.io/docs/concepts/containers/images/#config-json)
 [^2]:[Customizing the Chart Before Installing - Helm Docs](https://helm.sh/docs/intro/using_helm/#customizing-the-chart-before-installing)
@@ -173,3 +205,9 @@ json.decoder.JSONDecodeError: Expecting ',' delimiter: line 9 column 1 (char 155
 [^9]:[How to run and test compose in github actions](https://github.com/orgs/community/discussions/27185)
 [^10]:[Getting db URL from docker](https://www.reddit.com/r/docker/comments/es48vn/how_to_force_or_identify_db_url_in/)
 [^11]:[Someone having the same problem](https://stackoverflow.com/questions/9156417/valid-json-giving-jsondecodeerror-expecting-delimiter)
+[^12]:[Package and deploy Docker Compose applications as OCI artifacts](https://docs.docker.com/compose/how-tos/oci-artifact/)
+[^13]:[PVC in Helm Article](https://anshu-anshikasharma114.medium.com/manage-pv-and-pvc-binding-in-helm-templates-from-challenges-to-solutions-ba13652f4a17)
+[^14]:[Secrets](https://learn.kodekloud.com/learn/courses/cka-certification-course-certified-kubernetes-administrator/module/2ddcf79b-abb0-4aeb-ad0c-3d54c7b4fc64/lesson/59dd4ea9-d571-4db0-9bfb-12006d31d3a9)
+ [^15]:[Init Containers Lesson](https://learn.kodekloud.com/learn/courses/cka-certification-course-certified-kubernetes-administrator/module/2ddcf79b-abb0-4aeb-ad0c-3d54c7b4fc64/lesson/27822812-d758-428d-91db-942db6800ab1)
+ [^16]:[HPA Lesson](https://learn.kodekloud.com/learn/courses/cka-certification-course-certified-kubernetes-administrator/module/2ddcf79b-abb0-4aeb-ad0c-3d54c7b4fc64/lesson/9fc22af6-82b3-4cda-9a57-dd94e24ecb1d)
+ [^17]:["By using the Docker entrypoint means that we can dynamically inject any secrets"](https://medium.com/@zdk/simple-and-secure-way-to-pass-secrets-and-credentials-into-docker-containers-c2f66175b0a4)
