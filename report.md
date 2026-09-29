@@ -72,6 +72,7 @@
    | | - Did a 12 factor app table for myself, to keep what i need to do in check | 
    | | - I'm getting ahead of myself and loose track of what's actually doable when i do too much research, forcing myself to actually start implementing again |
    | 30.09 | - Issue to solve: Data injectable json instead of hardcoded values |
+   | | - This has been intensely frustrating. Putting it back on the pinned issues, picking up creating more k8s resources through helm. |
 
    
    
@@ -104,11 +105,17 @@
 ### Unit  
 > **1. 404 not found when cURL'ed (most important)**  
 > 2. ~~How to **NOT** hardcode the mongodb cred.s in flasks 'db_config.json'~~ [^1] [^8]
->> There must be a reason why they decided to full the bd config flies from a separate config.py
->> and not directly pull from db-config.json. I think I'm able to use any method to store cred as long as
->> i can implement 'jsonify-ing' it at config.py (what it does anyways, even though the file is already a json)
->>> How can i leave the config data ***inside the image*** blank and then fill through docker (gitignored env or secrets) and kubernetes's CRI at runtime? [^10]
->>>  "The Twelve Factors, it says that we could pass this type of information via shell ENV vars and those information we passed will be used by the app (i.e. container) at runtime." [^17]
+>> ~~There must be a reason why they decided to full the bd config flies from a separate config.py~~
+>> ~~and not directly pull from db-config.json. I think I'm able to use any method to store cred as long as~~
+>> ~~i can implement 'jsonify-ing' it at config.py (what it does anyways, even though the file is already a json)~~
+>>> ~~How can i leave the config data ***inside the image*** blank and then fill through docker (gitignored env or secrets) and kubernetes's CRI at runtime?~~[^10]
+>>>> Ok, several issues with that. I can:
+>>>>> Get a secrets manager to do it (big learning curve)   
+>>>>> Implement a .py file combined with a bash script to get the data at runtime (would take too long for me to actually do it correctly)
+>>>>>> Apparently, it is hard to use json :(
+
+>>>  ~~"The Twelve Factors, it says that we could pass this type of information via shell ENV vars and those information we passed will be used by the app (i.e. container) at runtime."~~ [^17]
+>>>> Nope, uses AWS Secrets Manager
        
 > 3. After i meddled with the db config (image tag 1.1 instead of the 1.0 that all tools are using, for safety purposes), i ran into an error: [^11]
  ```bash
@@ -186,12 +193,13 @@ json.decoder.JSONDecodeError: Expecting ',' delimiter: line 9 column 1 (char 155
  ### Helm
 > 1. Check out using recommended labels further [^6]   
 > 2. Chart-hookify your helm [^7]   
-> 3. Implement hpa[^16] and gateway api 
+> 3. Implement ~~hpa~~[^16] and gateway api (??)
 > 4. Configure:   
 >>  The mongodb auth [^14] 
 >> PVC [^13]   
 >> RBAC?   
->> Metrics Server ( minikube addons enable metrics server)
+>> ~~Metrics Server ( minikube addons enable metrics server)~~
+>>> Make sure you look up the 'metrics server addon = enabled' for reusability?
 >> Init containers to build the image and pass it onto the main container???? (Idk if makes sense for now, just an idea to pass values to db_config.json) [^15]
 >> Vault? Secret(encrypted)??
    
