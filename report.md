@@ -10,7 +10,7 @@
   - [x] Dockerize the application
   - [x] Provide a docker compose file to run it locally 
   - [x] Run minikube/kind or any kind of local kubernetes cluster locally. 
-  - [ ] Provide a script and/or the documentation of how to run the cluster locally.
+  - [x] Provide a script and/or the documentation of how to run the cluster locally.
   - [x] Prepare kubernetes manifests(yaml files) for the application and for the DB of the app
   - [x] Develop a helm chart for the app
   - [ ] Prepare a CI pipeline for the application in any CI tool(Jenkins, Github Actions, GitLab etc.)
@@ -51,8 +51,13 @@
    | 28.09 | - Created a very simple helm chart in order to move on with the project req |
    | | - Onto creating CI pipeline |
    | | - Refreshing memory by going through courses |
+   | | - Created ci jobs for unit testing and docker, but there seems to be issues |
+   | | - Troubleshooting the ci | 
+   | | - Problem seems to be with the app itself and not the ci, it doesn't pass the tests |
+   | | - Troubleshooting the app | 
    | 29.09 | - Problem handling starting from unit to ci |
-   
+   | | - moving on to creating a documentation instead | 
+   | | - Finishing the ci jobs (they don't actually need to be validating what i have if it's broken. So its better to finish them up and return for why the app is failing tests later | 
    
 ---
    ## Notes / Problems / Missing Parts 
