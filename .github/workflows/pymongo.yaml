@@ -59,10 +59,10 @@ jobs:
     - name: Load Docker the image from artifact
       run: |
             docker load --input /tmp/flask-app-image.tar
-      run: docker image ls
+    - run: docker image ls
 
     - name: Deploy k8s
-    - uses: Azure/k8s-deploy@v7
+      uses: Azure/k8s-deploy@v7
       with:
         action: deploy
         manifests: |
