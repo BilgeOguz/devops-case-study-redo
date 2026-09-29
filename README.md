@@ -18,7 +18,7 @@ docker build -t flask-api:1.0 /app/mvc-flask-pymongo/
 ```bash
 docker compose up
 ```
-### Start the k8s Cluster (from raw manifest files) 
+### Deployment of the App to the Cluster 
 
 ```bash
 minikube start
