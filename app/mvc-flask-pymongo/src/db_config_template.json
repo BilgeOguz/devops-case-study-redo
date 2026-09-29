@@ -1,0 +1,12 @@
+// This file is for future use for when i figure out how to inject the
+//information to this json file without hardcoding it. Or find a way
+//to change how the api gets the information as a whole 
+
+{
+    "db": {
+            "url" : "mongodb://localhost:27017/",
+            "name" :"database_name",
+            "user" :"",
+            "password" :""
+    }
+}

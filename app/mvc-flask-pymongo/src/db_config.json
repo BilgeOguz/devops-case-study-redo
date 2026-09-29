@@ -1,0 +1,8 @@
+{
+    "db": {
+            "url": "http://mongodb:27017/",
+            "name": "mongo",
+            "user": "root",
+            "password": "redemption"
+
+}

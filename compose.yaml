@@ -18,7 +18,7 @@ services:
       - back-end
 
   api:
-    image: flask-api:1.0
+    image: flask-api:1.1
     restart: on-failure:5
     ports:
       - 5000:5000
@@ -29,7 +29,7 @@ services:
       mongo:
         condition: service_healthy
     healthcheck:
-      test: curl --fail --quiet http://localhost:5000/ || exit 1
+      test: curl --fail http://127.0.0.1:5000/ || exit 1
       interval: 60s
       timeout: 20s
       retries: 5
