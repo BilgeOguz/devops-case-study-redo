@@ -55,9 +55,13 @@
    | | - Troubleshooting the ci | 
    | | - Problem seems to be with the app itself and not the ci, it doesn't pass the tests |
    | | - Troubleshooting the app | 
-   | 29.09 | - Problem handling starting from unit to ci |
+   | 29.09 | - Problem handling starting from the app itself to ci |
    | | - moving on to creating a documentation instead | 
    | | - Finishing the ci jobs (they don't actually need to be validating what i have if it's broken. So its better to finish them up and return for why the app is failing tests later | 
+   | | - Realized I've been changing things in both main and ci experimentations branches, not to mention locally too. Scared to merge, will look up merge conflicts |
+   | | - Somewhat finished CI pipeline, will watch some more KodeKloud videos to make sure before i merge | 
+   
+   
    
 ---
    ## Notes / Problems / Missing Parts 
@@ -65,8 +69,13 @@
 *to solve later, after initial deadline*
 ### Unit  
 > **1. 404 not found when cURL'ed (most important)**  
-> 2. How to **NOT** hardcode the mongodb cred.s in flasks 'db_config.json' [^1] [^8]      
-> 3. After i fixed the db config, i ran into an error:
+> 2. ~~How to **NOT** hardcode the mongodb cred.s in flasks 'db_config.json'~~ [^1] [^8]
+>> There must be a reason why they decided to full the bd config flies from a separate config.py
+>> and not directly pull from db-config.json. I think I'm able to use any method to store cred as long as
+>> i can implement 'jsonify-ing' it at config.py (what it does anyways, even though the file is already a json)
+>>> How can i leave the config data ***inside the image*** blank and then fill through docker (gitignored env or secrets) and kubernetes's CRI at runtime? [^10]
+       
+> 3. After i meddled with the db config (image tag 1.1 instead of the 1.0 that all tools are using, for safety purposes), i ran into an error: [^11]
  ```bash
  docker run flask-api:1.1
 Traceback (most recent call last):
@@ -105,9 +114,7 @@ json.decoder.JSONDecodeError: Expecting ',' delimiter: line 9 column 1 (char 155
 > 1. Docker security (?) additions mentined by my supervisor.   
 > 2. ~~Double-checking health checks done in compose~~  
 >> ~~Just because they seemed healthy, doesn't mean they are, maybe the health checks were implemented poorly.~~
->> Checked them, they are not giving healthy results anyways. There is just no halt system for it.
->>> Its RestartPolicy is set to on-failure, but unhealth isn't failure so it doesn't stop.
->>> **I can't have it changed to healthy right no, then it won't work. I'd have to fix the app side first.**
+>>> Checked them, they are not giving healthy results anyways. There is just no halt system for it.
 
  ### Kubernetes
 > 1. This Kubernetes structure is almost as simplest it gets:
@@ -115,15 +122,17 @@ json.decoder.JSONDecodeError: Expecting ',' delimiter: line 9 column 1 (char 155
 >>> It's to be upgraded and added onto once the complete project **once the main requirements are met.**
 
 > 2. ~~Readiness Prope~~ & Pod Affinity for flask deployment
->> Figure out how to ~~get readiness prope~~ and fix affinity (They are in the yaml manifests as a comments)
+>> Figure out how to ~~get readiness prope and~~ fix affinity (They are in the yaml manifests as a comments)
 >>> The liveness prope i currently is a better readiness prope, I should find a new liveness prope instead. 
 
-> 3. Scripts for running locally on dif env
->> For the app deployment,
+> 3. ~~Scripts for running locally on dif env~~
+>> ~~For the app deployment,~~
    ```bash
    minikube image build -t flask-api:1.0 app/mvc-flask-pymongo/
    ```
->>   command used
+>>   ~~command used~~
+>>> Added it to the setup documentation in README.md, won't be a problem for now but I'll be considering
+>>> writing automation scrips later. 
 
 > ~~4. MongoDB using wrong auth information~~ [^2] 
 >> ~~Fix it either creating actual manifest files for mongo or finding a way to change the pull via bash or helm options (later add it in scripts)~~    
@@ -133,7 +142,7 @@ json.decoder.JSONDecodeError: Expecting ',' delimiter: line 9 column 1 (char 155
 >> ~~Meh, maybe a nodeport for now? KodeKloud lesson mentioned it acting as nodepoort in bare metal, how to achieve that?~~ [^3]
 >> Changed it to a nodeport at helm level, ready to change back from values anytime.
 
-> 6. Look further into some topics in more depth (mainly tu use at helm at this point in the project)
+> 6. Look further into some topics in more depth (mainly to use at helm at this point in the project)
 >> Service accounts (k8s security in general)[^4]
 >> Gateway api instead of ingress this time [^5]
    
@@ -144,10 +153,11 @@ json.decoder.JSONDecodeError: Expecting ',' delimiter: line 9 column 1 (char 155
 > 4. Configure the mongodb values
    
  ### Github Actions
-> 1. Unit testing & docker problems
+> 1. Unit test  not passing
 >> Figured out it wasn't because of the tests, but because of the flask app itself.
->> Will have to fix. 
-
+   
+> 2. Skipping docker compose testing (probably will do later) [^9]
+> 
 
 [^1]:[Interpretation of config.json - Kubernetes Docs](https://kubernetes.io/docs/concepts/containers/images/#config-json)
 [^2]:[Customizing the Chart Before Installing - Helm Docs](https://helm.sh/docs/intro/using_helm/#customizing-the-chart-before-installing)
@@ -157,3 +167,6 @@ json.decoder.JSONDecodeError: Expecting ',' delimiter: line 9 column 1 (char 155
 [^6]:[Recommended Labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/)
 [^7]:[KK Course on chart hooks](https://learn.kodekloud.com/learn/courses/helm-for-beginners/module/b90a4aa4-31b5-43d3-a7aa-383d48c50db0/lesson/28973a08-1894-4976-ad1c-1df96e338d4c)
 [^8]:[Example Project on KK that uses mongodb - timestamp: 3:31](https://learn.kodekloud.com/learn/courses/github-actions/module/6136c7b5-8fe0-4a84-ae77-0274623512d5/lesson/6d590d33-38aa-4982-a7df-318e8bfb74e8)
+[^9]:[How to run and test compose in github actions](https://github.com/orgs/community/discussions/27185)
+[^10]:[Getting db URL from docker](https://www.reddit.com/r/docker/comments/es48vn/how_to_force_or_identify_db_url_in/)
+[^11]:[Someone having the same problem](https://stackoverflow.com/questions/9156417/valid-json-giving-jsondecodeerror-expecting-delimiter)
