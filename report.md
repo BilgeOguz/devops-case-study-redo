@@ -6,13 +6,17 @@
    
    ---
 ## Case Study Expectations
+
+   PS: Parts written <ins>**underscored**</ins>
+   highlight the parts that are normally optional, but are required for me.
+   
   ####  Required Section 
   :white_check_mark: Dockerize the application   
-  :white_check_mark: Provide a docker compose file to run it locally    
+  :white_check_mark: <ins>Provide a docker compose file to run it locally</ins> 
   :white_check_mark: Run minikube/kind or any kind of local kubernetes cluster locally.    
   :white_check_mark: Provide a script and/or the documentation of how to run the cluster locally.   
   :white_check_mark: Prepare kubernetes manifests(yaml files) for the application and for the DB of the app   
-  :white_check_mark: Develop a helm chart for the app   
+  :white_check_mark: <ins>Develop a helm chart for the app</ins>   
   :arrows_counterclockwise: Prepare a CI pipeline for the application in any CI tool(Jenkins, Github Actions, GitLab etc.)
      
   ####  Optional / Extra Section
@@ -42,8 +46,8 @@
    | | - Decided to use minikube with this project as well | 
    | 27.09 | - Getting started with raw k8s manifests |
    | | - Removed and reinstalled minikube (broke when i purged docker & old case-study files completely) using minikube docs with stackoverflow for removal |
-   | | - Instead of a nodeport, decided to use loadbalancer svc (although it won't work as a load balancer in this k8s env, prev case study had ingress option at helm so load balancing wasn't an issue, might change it later)  |
-   | | - Created the simplest working k8s cluster possible for the app. |
+   | | - Instead of a nodeport, decided to use loadbalancer svc (although it won't work as a load balancer in this k8s env, prev case study had ingress option at helm so load balancing wasn't an issue, might change it later) (haven't implemented, just an idea) |
+   | | - Created the simplest working k8s files for app possible. |
    | | - Continuing with helm |
    | | - Installed the db from the bitnami helm chart |
    | | - Creating helm chart for the app |
@@ -51,6 +55,7 @@
    | 28.09 | - Created a very simple helm chart in order to move on with the project req |
    | | - Onto creating CI pipeline |
    | | - Refreshing memory by going through courses |
+   | | - Initial deadline :clock930: - proceeding with the project until tomorrow |
    | | - Created ci jobs for unit testing and docker, but there seems to be issues |
    | | - Troubleshooting the ci | 
    | | - Problem seems to be with the app itself and not the ci, it doesn't pass the tests |
@@ -60,8 +65,6 @@
    | | - Finishing the ci jobs (they don't actually need to be validating what i have if it's broken. So its better to finish them up and return for why the app is failing tests later | 
    | | - Realized I've been changing things in both main and ci experimentations branches, not to mention locally too. Scared to merge, will look up merge conflicts |
    | | - Somewhat finished CI pipeline, will watch some more KodeKloud videos to make sure before i merge | 
-   
-   
    
 ---
    ## Notes / Problems / Missing Parts 
