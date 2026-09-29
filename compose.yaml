@@ -18,7 +18,7 @@ services:
       - back-end
 
   api:
-    image: flask-api:1.1
+    image: flask-api:1.0
     restart: on-failure:5
     ports:
       - 5000:5000
