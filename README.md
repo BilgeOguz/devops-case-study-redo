@@ -20,6 +20,7 @@ docker compose up
 ```
 ### Deployment of the App to the Cluster 
 
+- Get app from k8s manifests
 ```bash
 minikube start
 kubectl apply -f k8s/
