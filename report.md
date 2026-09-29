@@ -51,58 +51,98 @@
    | 28.09 | - Created a very simple helm chart in order to move on with the project req |
    | | - Onto creating CI pipeline |
    | | - Refreshing memory by going through courses |
+   | 29.09 | - Problem handling starting from unit to ci |
    
    
 ---
    ## Notes / Problems / Missing Parts 
 *This part of the report is for keeping track of pins i've decided*
 *to solve later, after initial deadline*
-> ### App  
->> **1. 404 not found when cURL'ed (most important)**  
->> 2. How to **NOT** hardcode the mongodb cred.s in flasks 'db_config.json' [^1] [^8]
+### Unit  
+> **1. 404 not found when cURL'ed (most important)**  
+> 2. How to **NOT** hardcode the mongodb cred.s in flasks 'db_config.json' [^1] [^8]      
+> 3. After i fixed the db config, i ran into an error:
+ ```bash
+ docker run flask-api:1.1
+Traceback (most recent call last):
+  File "/src/app.py", line 2, in <module>
+    from models import todo  # call model file
+    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/src/models/todo.py", line 2, in <module>
+    from factory.database import Database
+  File "/src/factory/database.py", line 5, in <module>
+    from config import config
+  File "/src/config.py", line 3, in <module>
+    config = json.load(open('db_config.json'))  #load db in json format
+  File "/usr/lib/python3.14/json/__init__.py", line 298, in load
+    return loads(fp.read(),
+        cls=cls, object_hook=object_hook,
+        parse_float=parse_float, parse_int=parse_int,
+        parse_constant=parse_constant, object_pairs_hook=object_pairs_hook, **kw)
+  File "/usr/lib/python3.14/json/__init__.py", line 352, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/usr/lib/python3.14/json/decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/json/decoder.py", line 361, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ~~~~~~~~~~~~~~^^^^^^^^
+json.decoder.JSONDecodeError: Expecting ',' delimiter: line 9 column 1 (char 155)
+```
+>> Seems like a syntax problem at first, but i've checked the 'problem' parts and it seems fine. I'm currently looking it up to fix it, soma people had the same problem (same error with valid syntax) but their solutions don't apply to my problem.
+>> I'll give working thorugh the python/flask related issues but they are the least important in this case study. If not
+>> working, ***I'd have to call it a day*** and continue with the other (helm especially) parts of the project instead.
+>>
+>> ***Moving along with the not working but running flask-api:1.0 instead of the corrected but crashing 1.1***
+    
+### Docker  
+> 1. Docker security (?) additions mentined by my supervisor.   
+> 2. ~~Double-checking health checks done in compose~~  
+>> ~~Just because they seemed healthy, doesn't mean they are, maybe the health checks were implemented poorly.~~
+>> Checked them, they are not giving healthy results anyways. There is just no halt system for it.
+>>> Its RestartPolicy is set to on-failure, but unhealth isn't failure so it doesn't stop.
+>>> **I can't have it changed to healthy right no, then it won't work. I'd have to fix the app side first.**
 
-> ### Docker  
->> 1. Docker security (?) additions mentined by my supervisor.   
->> 2. Double-checking health checks done in compose   
->>> Just because they seemed healthy, doesn't mean they are, maybe the health checks were implemented poorly.   
+ ### Kubernetes
+> 1. This Kubernetes structure is almost as simplest it gets:
+>> Deployments + required networking + helm installed db
+>>> It's to be upgraded and added onto once the complete project **once the main requirements are met.**
 
-> ### Kubernetes
->> 1. This Kubernetes structure is almost as simplest it gets:
->>> Deployments + required networking + helm installed db
->>>> It's to be upgraded and added onto once the complete project **once the main requirements are met.**
+> 2. ~~Readiness Prope~~ & Pod Affinity for flask deployment
+>> Figure out how to ~~get readiness prope~~ and fix affinity (They are in the yaml manifests as a comments)
+>>> The liveness prope i currently is a better readiness prope, I should find a new liveness prope instead. 
 
->> 2. Readiness Trope & Pod Affinity for flask deployment
->>> Figure out how to get readiness trope and fix affinity (They are in the yaml manifests as a comments)
-
->> 3. Scripts for running locally on dif env
->>> For the app deployment,
+> 3. Scripts for running locally on dif env
+>> For the app deployment,
    ```bash
    minikube image build -t flask-api:1.0 app/mvc-flask-pymongo/
    ```
->>>   command used
+>>   command used
 
->> ~~4. MongoDB using wrong auth information~~ [^2] 
->>> ~~Fix it either creating actual manifest files for mongo or finding a way to change the pull via bash or helm options (later add it in scripts)~~    
->>> Fixed by pulling the helm chart instead of installing it
+> ~~4. MongoDB using wrong auth information~~ [^2] 
+>> ~~Fix it either creating actual manifest files for mongo or finding a way to change the pull via bash or helm options (later add it in scripts)~~    
+>> Fixed by pulling the helm chart instead of installing it
 
->> 5. ~~Loadbalancer stuck in pending state (bc of using it in bare metal instead of cloud providors)~~
->>> ~~Meh, maybe a nodeport for now? KodeKloud lesson mentioned it acting as nodepoort in bare metal, how to achieve that?~~ [^3]
->>> Changed it to a nodeport at helm level, ready to change back from values anytime.
+> 5. ~~Loadbalancer stuck in pending state (bc of using it in bare metal instead of cloud providors)~~
+>> ~~Meh, maybe a nodeport for now? KodeKloud lesson mentioned it acting as nodepoort in bare metal, how to achieve that?~~ [^3]
+>> Changed it to a nodeport at helm level, ready to change back from values anytime.
 
->> 6. Look further into some topics in more depth (mainly tu use at helm at this point in the project)
->>> Service accounts (k8s security in general)[^4]
->>> Gateway api instead of ingress this time [^5]
+> 6. Look further into some topics in more depth (mainly tu use at helm at this point in the project)
+>> Service accounts (k8s security in general)[^4]
+>> Gateway api instead of ingress this time [^5]
    
-> ### Helm
->> 1. Check out using recommended labels further [^6]
->> 2. Chart-hookify your helm [^7]
->> 3. Implement the empty hpa and gateway api
->> 4. Configure the mongodb values
+ ### Helm
+> 1. Check out using recommended labels further [^6]
+> 2. Chart-hookify your helm [^7]
+> 3. Implement hpa and gateway api
+> 4. Configure the mongodb values
    
-> ### Github Actions
->>
+ ### Github Actions
+> 1. Unit testing & docker problems
+>> Figured out it wasn't because of the tests, but because of the flask app itself.
+>> Will have to fix. 
 
----
 
 [^1]:[Interpretation of config.json - Kubernetes Docs](https://kubernetes.io/docs/concepts/containers/images/#config-json)
 [^2]:[Customizing the Chart Before Installing - Helm Docs](https://helm.sh/docs/intro/using_helm/#customizing-the-chart-before-installing)
