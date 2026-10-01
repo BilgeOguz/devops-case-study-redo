@@ -73,6 +73,10 @@
    | | - I'm getting ahead of myself and loose track of what's actually doable when i do too much research, forcing myself to actually start implementing again |
    | 30.09 | - Issue to solve: Data injectable json instead of hardcoded values |
    | | - This has been intensely frustrating. Putting it back on the pinned issues, picking up creating more k8s resources through helm. |
+   | | - HPA implemented (with metrics service enabled from minikube addons)
+   | | - config_converter.sh from prev project repurposed to get bd config files at runtime |   
+   | | 
+   
 
    
    
@@ -109,13 +113,14 @@
 >> ~~and not directly pull from db-config.json. I think I'm able to use any method to store cred as long as~~
 >> ~~i can implement 'jsonify-ing' it at config.py (what it does anyways, even though the file is already a json)~~
 >>> ~~How can i leave the config data ***inside the image*** blank and then fill through docker (gitignored env or secrets) and kubernetes's CRI at runtime?~~[^10]
->>>> Ok, several issues with that. I can:
->>>>> Get a secrets manager to do it (big learning curve)   
->>>>> Implement a .py file combined with a bash script to get the data at runtime (would take too long for me to actually do it correctly)
->>>>>> Apparently, it is hard to use json :(
+>>>> ~~Ok, several issues with that. I can:~~
+>>>>> ~~Get a secrets manager to do it (big learning curve)~~   
+>>>>> ~~Implement a .py file combined with a bash script to get the data at runtime (would take too long for me to actually do it correctly)~~
+>>>>>> ~~Apparently, it is hard to use json :(~~         
+>>>>>> After revision 1, i am reminded that the previous bash project was exactly this. I just need to put the formatted data onto a json format instead of yaml[^18]
 
 >>>  ~~"The Twelve Factors, it says that we could pass this type of information via shell ENV vars and those information we passed will be used by the app (i.e. container) at runtime."~~ [^17]
->>>> Nope, uses AWS Secrets Manager
+>>>> ~~Nope, uses AWS Secrets Manager~~
        
 > 3. After i meddled with the db config (image tag 1.1 instead of the 1.0 that all tools are using, for safety purposes), i ran into an error: [^11]
  ```bash
@@ -194,6 +199,7 @@ json.decoder.JSONDecodeError: Expecting ',' delimiter: line 9 column 1 (char 155
 > 1. Check out using recommended labels further [^6]   
 > 2. Chart-hookify your helm [^7]   
 > 3. Implement ~~hpa~~[^16] and gateway api (??)
+>> Automate metric-server addon enabling later.
 > 4. Configure:   
 >>  The mongodb auth [^14]    
 >> PVC [^13]   
@@ -228,3 +234,4 @@ json.decoder.JSONDecodeError: Expecting ',' delimiter: line 9 column 1 (char 155
  [^15]:[Init Containers Lesson](https://learn.kodekloud.com/learn/courses/cka-certification-course-certified-kubernetes-administrator/module/2ddcf79b-abb0-4aeb-ad0c-3d54c7b4fc64/lesson/27822812-d758-428d-91db-942db6800ab1)
  [^16]:[HPA Lesson](https://learn.kodekloud.com/learn/courses/cka-certification-course-certified-kubernetes-administrator/module/2ddcf79b-abb0-4aeb-ad0c-3d54c7b4fc64/lesson/9fc22af6-82b3-4cda-9a57-dd94e24ecb1d)
  [^17]:["By using the Docker entrypoint means that we can dynamically inject any secrets"](https://medium.com/@zdk/simple-and-secure-way-to-pass-secrets-and-credentials-into-docker-containers-c2f66175b0a4)
+ [^18]:[jq](https://stackoverflow.com/questions/53089179/how-can-i-convert-a-key-value-sequence-into-json)
